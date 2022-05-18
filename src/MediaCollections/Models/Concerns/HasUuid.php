@@ -2,7 +2,7 @@
 
 namespace Spatie\MediaLibrary\MediaCollections\Models\Concerns;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Support\Str;
 
 trait HasUuid

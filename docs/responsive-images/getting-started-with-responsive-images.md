@@ -115,7 +115,7 @@ namespace App;
 
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class YourModel extends Model implements HasMedia
