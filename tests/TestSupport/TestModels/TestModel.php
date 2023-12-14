@@ -2,7 +2,7 @@
 
 namespace Spatie\MediaLibrary\Tests\TestSupport\TestModels;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -21,6 +21,8 @@ class TestModel extends Model implements HasMedia
         $this
             ->addMediaCollection('avatar')
             ->useFallbackUrl('/default-url.jpg')
-            ->useFallbackPath('/default-path.jpg');
+            ->useFallbackUrl('/default-avatar-thumb-url.jpg', 'avatar_thumb')
+            ->useFallbackPath('/default-path.jpg')
+            ->useFallbackPath('/default-avatar-thumb-path.jpg', 'avatar_thumb');
     }
 }

@@ -2,6 +2,573 @@
 
 All notable changes to `laravel-medialibrary` will be documented in this file
 
+## 10.15.0 - 2023-11-03
+
+### What's Changed
+
+- Don't include soft deleted models as orphaned media by @patrickomeara in https://github.com/spatie/laravel-medialibrary/pull/3428
+
+### New Contributors
+
+- @patrickomeara made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3428
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.14.0...10.15.0
+
+## 10.14.0 - 2023-10-25
+
+### What's Changed
+
+- Remove unnecessary directory creation by @grEvenX in https://github.com/spatie/laravel-medialibrary/pull/3397
+- Feature/new custom delete fix #3190  by @benjam-es in https://github.com/spatie/laravel-medialibrary/pull/3252
+- Delete orphaned media in clean command by @mbardelmeijer in https://github.com/spatie/laravel-medialibrary/pull/3419
+
+### New Contributors
+
+- @grEvenX made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3397
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.13.2...10.14.0
+
+## 10.13.2 - 2023-10-09
+
+### What's Changed
+
+- Test against php 8.3 by @sergiy-petrov in https://github.com/spatie/laravel-medialibrary/pull/3402
+- Bump stefanzweifel/git-auto-commit-action from 4 to 5 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3405
+
+### New Contributors
+
+- @sergiy-petrov made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3402
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.13.1...10.13.2
+
+## 10.13.1 - 2023-10-09
+
+### What's Changed
+
+- Adding example to docs to pass translation keys from Vue I18n in (pro) components by @jeffreyvanhees in https://github.com/spatie/laravel-medialibrary/pull/3395
+- added HEIC support by @boryn in https://github.com/spatie/laravel-medialibrary/pull/3399
+
+### New Contributors
+
+- @boryn made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3399
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.13.0...10.13.1
+
+## 10.13.0 - 2023-09-26
+
+### What's Changed
+
+- V3 docs by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/3382
+- Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3374
+- Support drivers containing gcs or s3 in driver name by @LukeAbell in https://github.com/spatie/laravel-medialibrary/pull/3389
+
+### New Contributors
+
+- @LukeAbell made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3389
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.12.2...10.13.0
+
+## 10.12.2 - 2023-09-05
+
+### What's Changed
+
+- Fix typos by @szepeviktor in https://github.com/spatie/laravel-medialibrary/pull/3360
+- Updated doc block for $media->model_id by @viirre in https://github.com/spatie/laravel-medialibrary/pull/3369
+- Use temporary folder of spatie/laravel-medialibrary for spatie/image as well by @korridor in https://github.com/spatie/laravel-medialibrary/pull/3368
+
+### New Contributors
+
+- @viirre made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3369
+- @korridor made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3368
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.12.1...10.12.2
+
+## 10.12.1 - 2023-09-04
+
+### What's Changed
+
+- Adds `FileAdder@setFileSize()` by @cosmastech in https://github.com/spatie/laravel-medialibrary/pull/3357
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.12.0...10.12.1
+
+## 10.12.0 - 2023-09-04
+
+### What's Changed
+
+- Impove PHPStan workflow by @szepeviktor in https://github.com/spatie/laravel-medialibrary/pull/3356
+- Make `Filesystem@copyToMediaLibraryFromRemote()` more extensible by @cosmastech in https://github.com/spatie/laravel-medialibrary/pull/3361
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.11.4...10.12.0
+
+## 10.11.4 - 2023-08-25
+
+### What's Changed
+
+- PhpStan Workflow by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3341
+- Fixed error when config is cached by @Roboroads in https://github.com/spatie/laravel-medialibrary/pull/3347
+
+### New Contributors
+
+- @Roboroads made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3347
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.11.3...10.11.4
+
+## 10.11.2 - 2023-07-27
+
+### What's Changed
+
+- Handle null extensions and mimetypes with ImageGeneratorFactory by @cosmastech in https://github.com/spatie/laravel-medialibrary/pull/3326
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.11.1...10.11.2
+
+## 10.11.1 - 2023-07-25
+
+- revert loading media introduced in #3319 (v10.10.2)
+
+## 10.11.0 - 2023-07-24
+
+### What's Changed
+
+- added AVIF support by @0xb4lint in https://github.com/spatie/laravel-medialibrary/pull/3320
+
+### New Contributors
+
+- @0xb4lint made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3320
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.10.2...10.11.0
+
+## 10.10.2 - 2023-07-24
+
+### What's Changed
+
+- Bump dependabot/fetch-metadata from 1.5.1 to 1.6.0 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3308
+- Always set the updated_at column when marking conversions are finalized by @cosmastech in https://github.com/spatie/laravel-medialibrary/pull/3316
+- New config option to restore default laravel model serialization behaviour by @BARNZ in https://github.com/spatie/laravel-medialibrary/pull/3210
+- Automatically set model relationship on media by @michaelbaril in https://github.com/spatie/laravel-medialibrary/pull/3319
+
+### New Contributors
+
+- @BARNZ made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3210
+- @michaelbaril made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3319
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.10.1...10.10.2
+
+## 10.10.1 - 2023-06-29
+
+### What's Changed
+
+- [Docs] Fix typos in Pro docs by @drbyte in https://github.com/spatie/laravel-medialibrary/pull/3298
+- FIX create migration by @wamesro in https://github.com/spatie/laravel-medialibrary/pull/3299
+
+### New Contributors
+
+- @wamesro made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3299
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.10.0...10.10.1
+
+## 10.10.0 - 2023-06-22
+
+### What's Changed
+
+- Fix typo in composer.json by @jeffreyvanhees in https://github.com/spatie/laravel-medialibrary/pull/3283
+- Fixed a typo in the docs for creating custom react components by @DylanDebo in https://github.com/spatie/laravel-medialibrary/pull/3290
+- feat: add support for * ( ANY ) media collection by @huzaifaarain in https://github.com/spatie/laravel-medialibrary/pull/3286
+
+### New Contributors
+
+- @jeffreyvanhees made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3283
+- @DylanDebo made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3290
+- @huzaifaarain made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3286
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.9.4...10.10.0
+
+## 10.9.4 - 2023-06-06
+
+### What's Changed
+
+- Bump dependabot/fetch-metadata from 1.4.0 to 1.5.1 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3270
+- Bug/3279 class not found by @Nielsvanpach in https://github.com/spatie/laravel-medialibrary/pull/3281
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.9.3...10.9.4
+
+## 10.9.3 - 2023-05-22
+
+### What's Changed
+
+- set return type for FileManipulator@generateResponsiveImages() by @cosmastech in https://github.com/spatie/laravel-medialibrary/pull/3266
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.9.2...10.9.3
+
+## 10.9.2 - 2023-05-03
+
+### What's Changed
+
+- Bump dependabot/fetch-metadata from 1.3.6 to 1.4.0 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3253
+- Fix InteractsWithMedia serialization by @cosmastech in https://github.com/spatie/laravel-medialibrary/pull/3258
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.9.1...10.9.2
+
+## 10.9.1 - 2023-04-21
+
+### What's Changed
+
+- feat: add user agent to stream context in DefaultDownloader by @rolfvandekrol in https://github.com/spatie/laravel-medialibrary/pull/3248
+
+### New Contributors
+
+- @rolfvandekrol made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3248
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.9.0...10.9.1
+
+## 10.9.0 - 2023-04-20
+
+### What's Changed
+
+- Support maennchen/zipstream-php v3 by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3246
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.8.0...10.9.0
+
+## 10.8.0 - 2023-04-17
+
+### What's Changed
+
+- Only offer publishing when running in console by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3227
+- Add webp extension. Fix: files with webp doesn't process responsive images by @websitevirtuoso in https://github.com/spatie/laravel-medialibrary/pull/3242
+
+### New Contributors
+
+- @websitevirtuoso made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3242
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.16...10.8.0
+
+## 10.7.16 - 2023-03-30
+
+Allow any Laravel version up from 9.15
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.15...10.7.16
+
+## 10.7.15 - 2023-03-29
+
+- revert changes of previous release because of issues report in #3224
+
+## 10.7.12 - 2023-03-06
+
+### What's Changed
+
+- Fixed custom path generators for Media with morphed map relations by @aprokopenko in https://github.com/spatie/laravel-medialibrary/pull/3191
+
+### New Contributors
+
+- @aprokopenko made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3191
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.11...10.7.12
+
+## 10.7.11 - 2023-02-17
+
+### What's Changed
+
+- Replace migration id with alias by @eimantaaas in https://github.com/spatie/laravel-medialibrary/pull/3165
+- Bump dependabot/fetch-metadata from 1.3.5 to 1.3.6 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3174
+- update config instructions for custom_path_generators by @lukas-pierce in https://github.com/spatie/laravel-medialibrary/pull/3187
+- Use MimeTypes guessMimeType for better and more extensible MimeType detection by @Orrison in https://github.com/spatie/laravel-medialibrary/pull/3188
+
+### New Contributors
+
+- @eimantaaas made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3165
+- @lukas-pierce made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3187
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.10...10.7.11
+
+## 10.7.10 - 2023-01-19
+
+- improve output of command
+
+## 10.7.9 - 2023-01-12
+
+### What's Changed
+
+- Laravel 10.x Support by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3157
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.8...10.7.9
+
+## 10.7.8 - 2023-01-05
+
+### What's Changed
+
+- Prevent implicit conversion from float to int in FileSizeOptimizedWidthCalculator by @QuentinGab in https://github.com/spatie/laravel-medialibrary/pull/3145
+
+### New Contributors
+
+- @QuentinGab made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3145
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.7...10.7.8
+
+## 10.7.7 - 2023-01-05
+
+### What's Changed
+
+- Fix GitHub workflow status "test" badge by @stevebauman in https://github.com/spatie/laravel-medialibrary/pull/3144
+- Remove failed DB record even when using SoftDeletes by @Pilskalns in https://github.com/spatie/laravel-medialibrary/pull/3142
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.6...10.7.7
+
+## 10.7.6 - 2023-01-04
+
+### What's Changed
+
+- Ability to use morphed map model with custom path generator by @petyots in https://github.com/spatie/laravel-medialibrary/pull/3143
+
+### New Contributors
+
+- @petyots made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3143
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.5...10.7.6
+
+## 10.7.5 - 2022-12-30
+
+### What's Changed
+
+- Fix data corruption bug when storage disk becomes invalid by @Pilskalns in https://github.com/spatie/laravel-medialibrary/pull/3139
+
+### New Contributors
+
+- @Pilskalns made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3139
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.4...10.7.5
+
+## 10.7.4 - 2022-12-06
+
+### What's Changed
+
+- Format workflow files by @patinthehat in https://github.com/spatie/laravel-medialibrary/pull/3115
+- Normalize composer.json by @patinthehat in https://github.com/spatie/laravel-medialibrary/pull/3114
+- Allow to clean orphaned media when the `registerMediaConversionsUsingModelInstance` property is set to `true` on the model by @tomcoonen in https://github.com/spatie/laravel-medialibrary/pull/3120
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.3...10.7.4
+
+## 10.7.3 - 2022-11-27
+
+### What's Changed
+
+- Issue delete command once per unique directory by @alisaleem27 in https://github.com/spatie/laravel-medialibrary/pull/3109
+- Add Dependabot Automation by @patinthehat in https://github.com/spatie/laravel-medialibrary/pull/3111
+- Bump actions/checkout from 2 to 3 by @dependabot in https://github.com/spatie/laravel-medialibrary/pull/3112
+- Throw error if disk cannot be accessed by @Silver343 in https://github.com/spatie/laravel-medialibrary/pull/3067
+
+### New Contributors
+
+- @alisaleem27 made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3109
+- @dependabot made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3112
+- @Silver343 made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3067
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.2...10.7.3
+
+## 10.7.2 - 2022-11-22
+
+### What's Changed
+
+- [Micro Optimization] Use slice instead of reverse->take by @Tofandel in https://github.com/spatie/laravel-medialibrary/pull/3098
+- Add Additional Filename Sanitization by @patinthehat in https://github.com/spatie/laravel-medialibrary/pull/3105
+
+### New Contributors
+
+- @patinthehat made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3105
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.1...10.7.2
+
+## 10.7.1 - 2022-11-09
+
+### What's Changed
+
+- fix #3090 syncMediaPath incorrectly comparing paths by @SlyDave in https://github.com/spatie/laravel-medialibrary/pull/3092
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.7.0...10.7.1
+
+## 9.12.4 - 2022-11-09
+
+### What's Changed
+
+- fix #3090 - branch v9 PHP 7.4 version of the fix by @SlyDave in https://github.com/spatie/laravel-medialibrary/pull/3091
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/9.12.3...9.12.4
+
+## 10.7.0 - 2022-11-09
+
+### What's Changed
+
+- Added option to set custom queue connection by @rahulhaque in https://github.com/spatie/laravel-medialibrary/pull/3085
+
+### New Contributors
+
+- @rahulhaque made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3085
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.6.1...10.7.0
+
+## 10.6.1 - 2022-11-04
+
+### What's Changed
+
+- docs: fix some typos by @ArnaudLier in https://github.com/spatie/laravel-medialibrary/pull/3075
+- Fix typo in property name in Media model by @pdziewa in https://github.com/spatie/laravel-medialibrary/pull/3082
+
+### New Contributors
+
+- @ArnaudLier made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3075
+- @pdziewa made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3082
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.6.0...10.6.1
+
+## 10.6.0 - 2022-10-21
+
+### What's Changed
+
+- Hint to additional installation instructions by @driesvints in https://github.com/spatie/laravel-medialibrary/pull/3047
+- PHP 8.2 Build by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/3061
+- Add fallback path/url support for conversions by @mertasan in https://github.com/spatie/laravel-medialibrary/pull/3062
+
+### New Contributors
+
+- @mertasan made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3062
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.5.2...10.6.0
+
+## 10.5.2 - 2022-09-30
+
+### What's Changed
+
+- Fix for audio only "video" files by @rcerljenko in https://github.com/spatie/laravel-medialibrary/pull/3046
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.5.1...10.5.2
+
+## 10.5.1 - 2022-09-21
+
+### What's Changed
+
+- Allow the Github actions to run locally via act by @emielmolenaar in https://github.com/spatie/laravel-medialibrary/pull/3028
+- Never explicitly create directories on GCS, just as with S3 by @boboldehampsink in https://github.com/spatie/laravel-medialibrary/pull/3037
+
+### New Contributors
+
+- @boboldehampsink made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3037
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.5.0...10.5.1
+
+## 10.5.0 - 2022-09-12
+
+### What's Changed
+
+- Use "request" where "response" is intended in docs by @euoia in https://github.com/spatie/laravel-medialibrary/pull/3027
+- Add getPathRelativeToRoot as a public method in the Media model by @emielmolenaar in https://github.com/spatie/laravel-medialibrary/pull/3026
+
+### New Contributors
+
+- @euoia made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3027
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.4.5...10.5.0
+
+## 10.4.5 - 2022-09-02
+
+### What's Changed
+
+- Change the create method to use 'static' by @FabienLucini in https://github.com/spatie/laravel-medialibrary/pull/3021
+
+### New Contributors
+
+- @FabienLucini made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3021
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.4.4...10.4.5
+
+## 10.4.4 - 2022-08-22
+
+### What's Changed
+
+- Adding a short vite description by @schonhoff in https://github.com/spatie/laravel-medialibrary/pull/3001
+- Add a note about limitation of generators by @Orrison in https://github.com/spatie/laravel-medialibrary/pull/3000
+- Update README.md to reference pest by @michaellindahl in https://github.com/spatie/laravel-medialibrary/pull/3004
+- Update CleanCommand to delete depreciated responsive images by @michaellindahl in https://github.com/spatie/laravel-medialibrary/pull/3003
+
+### New Contributors
+
+- @schonhoff made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3001
+- @Orrison made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3000
+- @michaellindahl made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/3004
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.4.3...10.4.4
+
+## 10.4.3 - 2022-08-02
+
+- Revert order media relationship
+
+## 10.4.2 - 2022-08-01
+
+### What's Changed
+
+- Upgrade example using JSON_EXTRACT by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/2970
+- clearMediaCollection() documentation clarification by @chimit in https://github.com/spatie/laravel-medialibrary/pull/2972
+- Added information that media wont be deleted if the deleted model use… by @titonova in https://github.com/spatie/laravel-medialibrary/pull/2993
+- Order media relationship by @Propaganistas in https://github.com/spatie/laravel-medialibrary/pull/2992
+
+### New Contributors
+
+- @chimit made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2972
+- @titonova made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2993
+- @Propaganistas made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2992
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.4.1...10.4.2
+
+## 10.4.1 - 2022-06-24
+
+### What's Changed
+
+- Add @template annotation to FileAdder by @sforward in https://github.com/spatie/laravel-medialibrary/pull/2964
+
+### New Contributors
+
+- @sforward made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2964
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.4.0...10.4.1
+
+## 10.4.0 - 2022-06-22
+
+### What's Changed
+
+- Update introduction.md by @trippo in https://github.com/spatie/laravel-medialibrary/pull/2951
+- Fix a typo by @bvtterfly in https://github.com/spatie/laravel-medialibrary/pull/2952
+- Update preparing-your-model.md by @timgavin in https://github.com/spatie/laravel-medialibrary/pull/2955
+- Add support for Laravel's `Attachable` objects by @freekmurze in https://github.com/spatie/laravel-medialibrary/pull/2963
+
+### New Contributors
+
+- @bvtterfly made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2952
+- @timgavin made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2955
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.3.6...10.4.0
+
+## 10.3.6 - 2022-05-23
+
+## What's Changed
+
+- add webp conversion support by @Jim-Webfox in https://github.com/spatie/laravel-medialibrary/pull/2928
+
+## New Contributors
+
+- @Jim-Webfox made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2928
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.3.5...10.3.6
+
+## 10.3.5 - 2022-05-19
+
+## What's Changed
+
+- Fix PhpStan test by @erikn69 in https://github.com/spatie/laravel-medialibrary/pull/2910
+- Fix `media-library:clean` command when using custom path generators by @YellowFish085 in https://github.com/spatie/laravel-medialibrary/pull/2925
+
+## New Contributors
+
+- @YellowFish085 made their first contribution in https://github.com/spatie/laravel-medialibrary/pull/2925
+
+**Full Changelog**: https://github.com/spatie/laravel-medialibrary/compare/10.3.4...10.3.5
+
 ## 10.3.4 - 2022-05-05
 
 - use anonymous migration
@@ -826,7 +1393,7 @@ To learn how to upgrade, take a look in UPGRADING.md
 
 ## 7.8.1 - 2019-07-31
 
-- fix for custom manipulations not getting appllied to all relevant conversions with the same name
+- fix for custom manipulations not getting applied to all relevant conversions with the same name
 
 ## 7.8.0 - 2019-07-31
 
@@ -1004,7 +1571,7 @@ To learn how to upgrade, take a look in UPGRADING.md
 ## 7.1.0 - 2018-03-22
 
 - `Filesystem` interface removed.
-- rename `Filesytem::renameFile(Media $media, string $oldFileName)` to `Filesystem::syncFileNames(Media $media)`
+- rename `Filesystem::renameFile(Media $media, string $oldFileName)` to `Filesystem::syncFileNames(Media $media)`
 - The `default_filesystem` config key has been changed to `disk_name`.
 
 ## 7.0.6 - 2018-03-22
@@ -1152,7 +1719,7 @@ To learn how to upgrade, take a look in UPGRADING.md
 
 ## 6.0.0 - 2017-08-30
 
-- add compatiblity for Laravel 5.5
+- add compatibility for Laravel 5.5
 - dropped support for older Laravel versions
 - the signature of `registerMediaConversions` has been changed
 - the default disk has changed from `media` to `public`
@@ -1346,7 +1913,7 @@ To learn how to upgrade, take a look in UPGRADING.md
 
 ## 4.9.3 - 2016-10-13
 
-- the image generators wil now do their supported extensions check in a case insensitive manner
+- the image generators will now do their supported extensions check in a case insensitive manner
 
 ## 4.9.2 - 2016-10-06
 
@@ -1438,7 +2005,7 @@ To learn how to upgrade, take a look in UPGRADING.md
 
 ## 3.17.3 - 2016-04-04
 
-- Fixed an issue that occured when deleting models with media in some php versions
+- Fixed an issue that occurred when deleting models with media in some php versions
 
 ## 3.17.2 - 2016-03-25
 
@@ -1454,7 +2021,7 @@ To learn how to upgrade, take a look in UPGRADING.md
 
 ## 3.16.1 - 2016-03-20
 
-- Improved the compatiblity with packages that hook into the `delete` method of an Eloquent model
+- Improved the compatibility with packages that hook into the `delete` method of an Eloquent model
 
 ## 3.16.0
 
@@ -1655,7 +2222,7 @@ $media = $this->testModel->addMediaFromUrl($url)
 
 ## 2.2.3
 
-- Fixed: when renaming file_name on a media object the orginal file gets renamed as well
+- Fixed: when renaming file_name on a media object the original file gets renamed as well
 
 ## 2.2.2
 

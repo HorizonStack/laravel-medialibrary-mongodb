@@ -19,9 +19,11 @@ class Image extends ImageGenerator
 
     public function supportedExtensions(): Collection
     {
-        $extensions = ['png', 'jpg', 'jpeg', 'gif'];
+        $extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif'];
         if (config('media-library.image_driver') === 'imagick') {
             $extensions[] = 'tiff';
+            $extensions[] = 'heic';
+            $extensions[] = 'heif';
         }
 
         return collect($extensions);
@@ -29,9 +31,11 @@ class Image extends ImageGenerator
 
     public function supportedMimeTypes(): Collection
     {
-        $mimeTypes = ['image/jpeg', 'image/gif', 'image/png'];
+        $mimeTypes = ['image/jpeg', 'image/gif', 'image/png', 'image/webp', 'image/avif'];
         if (config('media-library.image_driver') === 'imagick') {
             $mimeTypes[] = 'image/tiff';
+            $mimeTypes[] = 'image/heic';
+            $mimeTypes[] = 'image/heif';
         }
 
         return collect($mimeTypes);

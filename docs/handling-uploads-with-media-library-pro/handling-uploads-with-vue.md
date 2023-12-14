@@ -1,6 +1,6 @@
 ---
 title: Handling uploads with Vue
-weight: 5
+weight: 6
 ---
 
 Media Library Pro provides beautiful UI components for Vue 2 and Vue 3. They pack a lot of features: temporary uploads, custom property inputs, frontend validation, and robust error handling.
@@ -89,7 +89,7 @@ import { MediaLibraryAttachment } from "media-library-pro-vue2-attachment";
 import { MediaLibraryAttachment } from "media-library-pro-vue3-attachment";
 ```
 
-If you're using TypeScript, you will also have have to add this to your tsconfig:
+If you're using TypeScript, you will also have to add this to your tsconfig:
 
 ```json
 // tsconfig.json
@@ -176,6 +176,64 @@ You may also choose to import the components on the fly in a `.vue` file.
     };
 </script>
 ```
+
+## Vite
+If you are using vite, you need to import an alias to the `vite.config.js`  and some little changes to your Vue component.
+
+```diff
+// vite.config.js
+
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+
+export default defineConfig({
+    ...
+    resolve: {
+        alias: {
+            '@': '/resources/js',
++           'spatie-media-lib-pro': '/vendor/spatie/laravel-medialibrary-pro/resources/js',
+        },
+    },
+});
+```
+
+**Component changes Vue2**
+
+```diff
+...
+-    import { MediaLibraryAttachment } from "media-library-pro-vue2-attachment";
++    import { MediaLibraryAttachment } from "spatie-media-lib-pro/media-library-pro-vue2-attachment";
+-    import { MediaLibraryCollection } from "media-library-pro-vue2-collection";
++    import { MediaLibraryCollection } from "spatie-media-lib-pro/media-library-pro-vue2-collection";
+...
+```
+
+**Component changes Vue3**
+
+```diff
+...
+-    import { MediaLibraryAttachment } from "media-library-pro-vue3-attachment";
++    import { MediaLibraryAttachment } from "spatie-media-lib-pro/media-library-pro-vue3-attachment";
+-    import { MediaLibraryCollection } from "media-library-pro-vue3-collection";
++    import { MediaLibraryCollection } from "spatie-media-lib-pro/media-library-pro-vue3-collection";
+...
+```
+
+**CSS Import for SPA use**
+
+If you are using a SPA you can import the CSS into `app.js` like this:
+
+```diff
+// resources/js/app.js
+import './bootstrap';
+import '../css/app.css';
++import 'spatie-media-lib-pro/media-library-pro-styles/src/styles.css';
+...
+```
+
+If you want to import the CSS into `app.css` you can still use the import mentioned in [Customizing CSS](./customizing-css).
+
 
 ## Your first components
 
@@ -627,6 +685,14 @@ window.mediaLibraryTranslations = {
     somethingWentWrong: "whoops",
     remove: "delete",
 };
+```
+
+If you use the [vue-i18n](https://vue-i18n.intlify.dev/) package from intlify, you can also pass the keys from a translation file like `lang/media-library.php` by using the [`$tm`-function](https://vue-i18n.intlify.dev/api/composition.html#tm-key).
+
+```js
+<MediaLibraryCollection
+    :translations="$tm('media-library')"
+/>
 ```
 
 ## Props

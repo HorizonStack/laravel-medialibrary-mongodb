@@ -92,6 +92,7 @@ class FileManipulator
 
         /** @var PerformConversionsJob $job */
         $job = (new $performConversionsJobClass($conversions, $media, $onlyMissing))
+            ->onConnection(config('media-library.queue_connection_name'))
             ->onQueue(config('media-library.queue_name'));
 
         dispatch($job);
@@ -99,7 +100,7 @@ class FileManipulator
         return $this;
     }
 
-    protected function generateResponsiveImages(Media $media, bool $withResponsiveImages)
+    protected function generateResponsiveImages(Media $media, bool $withResponsiveImages): self
     {
         if (! $withResponsiveImages) {
             return $this;
@@ -116,6 +117,7 @@ class FileManipulator
 
         /** @var GenerateResponsiveImagesJob $job */
         $job = (new $generateResponsiveImagesJobClass($media))
+            ->onConnection(config('media-library.queue_connection_name'))
             ->onQueue(config('media-library.queue_name'));
 
         dispatch($job);

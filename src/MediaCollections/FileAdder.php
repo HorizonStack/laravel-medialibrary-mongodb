@@ -3,11 +3,12 @@
 namespace Spatie\MediaLibrary\MediaCollections;
 
 use Closure;
-use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Traits\Macroable;
+use MongoDB\Laravel\Eloquent\Model;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\Image as ImageGenerator;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskCannotBeAccessed;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
@@ -26,11 +27,11 @@ class FileAdder
 {
     use Macroable;
 
-    protected ?Model $subject = null;
+    protected ?HasMedia $subject = null;
 
     protected bool $preserveOriginal = false;
 
-    /** @var \Symfony\Component\HttpFoundation\File\UploadedFile|string */
+    /** @var UploadedFile|RemoteFile|SymfonyFile|string */
     protected $file;
 
     protected array $properties = [];
@@ -46,6 +47,8 @@ class FileAdder
     protected string $mediaName = '';
 
     protected string $diskName = '';
+
+    protected ?int $fileSize = null;
 
     protected string $conversionsDiskName = '';
 
@@ -65,6 +68,7 @@ class FileAdder
 
     public function setSubject(Model $subject): self
     {
+        /** @var HasMedia $subject */
         $this->subject = $subject;
 
         return $this;
@@ -73,7 +77,7 @@ class FileAdder
     /*
      * Set the file that needs to be imported.
      *
-     * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @param string|UploadedFile $file
      *
      * @return $this
      */
@@ -158,6 +162,13 @@ class FileAdder
         return $this;
     }
 
+    public function setFileSize(int $fileSize): self
+    {
+        $this->fileSize = $fileSize;
+
+        return $this;
+    }
+
     public function withCustomProperties(array $customProperties): self
     {
         $this->customProperties = $customProperties;
@@ -227,12 +238,14 @@ class FileAdder
             throw FileDoesNotExist::create($this->pathToFile);
         }
 
-        if ($storage->size($this->pathToFile) > config('media-library.max_file_size')) {
+        $this->fileSize ??= $storage->size($this->pathToFile);
+
+        if ($this->fileSize > config('media-library.max_file_size')) {
             throw FileIsTooBig::create($this->pathToFile, $storage->size($this->pathToFile));
         }
 
         $mediaClass = config('media-library.media_model');
-        /** @var \Spatie\MediaLibrary\MediaCollections\Models\Media $media */
+        /** @var Media $media */
         $media = new $mediaClass();
 
         $media->name = $this->mediaName;
@@ -251,7 +264,7 @@ class FileAdder
         $media->collection_name = $collectionName;
 
         $media->mime_type = $storage->mimeType($this->pathToFile);
-        $media->size = $storage->size($this->pathToFile);
+        $media->size = $this->fileSize;
         $media->custom_properties = $this->customProperties;
 
         $media->generated_conversions = [];
@@ -288,12 +301,14 @@ class FileAdder
             throw FileDoesNotExist::create($this->pathToFile);
         }
 
-        if (filesize($this->pathToFile) > config('media-library.max_file_size')) {
+        $this->fileSize ??= filesize($this->pathToFile);
+
+        if ($this->fileSize > config('media-library.max_file_size')) {
             throw FileIsTooBig::create($this->pathToFile);
         }
 
         $mediaClass = config('media-library.media_model');
-        /** @var \Spatie\MediaLibrary\MediaCollections\Models\Media $media */
+        /** @var Media $media */
         $media = new $mediaClass();
 
         $media->name = $this->mediaName;
@@ -309,7 +324,7 @@ class FileAdder
         $media->collection_name = $collectionName;
 
         $media->mime_type = File::getMimeType($this->pathToFile);
-        $media->size = filesize($this->pathToFile);
+        $media->size = $this->fileSize;
 
         if (! is_null($this->order)) {
             $media->order_column = $this->order;
@@ -381,6 +396,8 @@ class FileAdder
 
     public function defaultSanitizer(string $fileName): string
     {
+        $fileName = preg_replace('#\p{C}+#u', '', $fileName);
+
         return str_replace(['#', '/', '\\', ' '], '-', $fileName);
     }
 
@@ -423,9 +440,15 @@ class FileAdder
         $model->media()->save($media);
 
         if ($fileAdder->file instanceof RemoteFile) {
-            $this->filesystem->addRemote($fileAdder->file, $media, $fileAdder->fileName);
+            $addedMediaSuccessfully = $this->filesystem->addRemote($fileAdder->file, $media, $fileAdder->fileName);
         } else {
-            $this->filesystem->add($fileAdder->pathToFile, $media, $fileAdder->fileName);
+            $addedMediaSuccessfully = $this->filesystem->add($fileAdder->pathToFile, $media, $fileAdder->fileName);
+        }
+
+        if (! $addedMediaSuccessfully) {
+            $media->forceDelete();
+
+            throw DiskCannotBeAccessed::create($media->disk);
         }
 
         if (! $fileAdder->preserveOriginal) {
@@ -441,6 +464,10 @@ class FileAdder
 
             $job = new $generateResponsiveImagesJobClass($media);
 
+            if ($customConnection = config('media-library.queue_connection_name')) {
+                $job->onConnection($customConnection);
+            }
+
             if ($customQueue = config('media-library.queue_name')) {
                 $job->onQueue($customQueue);
             }
@@ -449,10 +476,12 @@ class FileAdder
         }
 
         if ($collectionSizeLimit = optional($this->getMediaCollection($media->collection_name))->collectionSizeLimit) {
-            $collectionMedia = $this->subject->fresh()->getMedia($media->collection_name);
+            /** @var HasMedia */
+            $subject = $this->subject->fresh();
+            $collectionMedia = $subject->getMedia($media->collection_name);
 
             if ($collectionMedia->count() > $collectionSizeLimit) {
-                $model->clearMediaCollectionExcept($media->collection_name, $collectionMedia->reverse()->take($collectionSizeLimit));
+                $model->clearMediaCollectionExcept($media->collection_name, $collectionMedia->slice(-$collectionSizeLimit, $collectionSizeLimit));
             }
         }
     }
@@ -496,6 +525,7 @@ class FileAdder
         /** @var TemporaryUpload $temporaryUpload */
         $temporaryUpload = $this->file;
 
+        /** @var Media */
         $media = $temporaryUpload->getFirstMedia();
 
         $media->name = $this->mediaName;

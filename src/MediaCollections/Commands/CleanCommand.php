@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\MediaRepository;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\ResponsiveImages\RegisteredResponsiveImages;
-use Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator;
+use Spatie\MediaLibrary\Support\PathGenerator\PathGeneratorFactory;
 
 class CleanCommand extends Command
 {
@@ -23,7 +23,8 @@ class CleanCommand extends Command
     protected $signature = 'media-library:clean {modelType?} {collectionName?} {disk?}
     {--dry-run : List files that will be removed without removing them},
     {--force : Force the operation to run when in production},
-    {--rate-limit= : Limit the number of requests per second },
+    {--rate-limit= : Limit the number of requests per second},
+    {--delete-orphaned : Delete orphaned media items},
     {--skip-conversions : Do not remove deprecated conversions}';
 
     protected $description = 'Clean deprecated conversions and files without related model.';
@@ -34,8 +35,6 @@ class CleanCommand extends Command
 
     protected Factory $fileSystem;
 
-    protected DefaultPathGenerator $basePathGenerator;
-
     protected bool $isDryRun = false;
 
     protected int $rateLimit = 0;
@@ -44,12 +43,10 @@ class CleanCommand extends Command
         MediaRepository $mediaRepository,
         FileManipulator $fileManipulator,
         Factory $fileSystem,
-        DefaultPathGenerator $basePathGenerator
     ) {
         $this->mediaRepository = $mediaRepository;
         $this->fileManipulator = $fileManipulator;
         $this->fileSystem = $fileSystem;
-        $this->basePathGenerator = $basePathGenerator;
 
         if (! $this->confirmToProceed()) {
             return;
@@ -57,6 +54,10 @@ class CleanCommand extends Command
 
         $this->isDryRun = $this->option('dry-run');
         $this->rateLimit = (int) $this->option('rate-limit');
+
+        if ($this->option('delete-orphaned')) {
+            $this->deleteOrphanedMediaItems();
+        }
 
         if (! $this->option('skip-conversions')) {
             $this->deleteFilesGeneratedForDeprecatedConversions();
@@ -91,13 +92,44 @@ class CleanCommand extends Command
         return $this->mediaRepository->all();
     }
 
+    protected function deleteOrphanedMediaItems(): void
+    {
+        $this->getOrphanedMediaItems()->each(function (Media $media): void {
+            if ($this->isDryRun) {
+                $this->info("Orphaned Media[id={$media->id}] found");
+
+                return;
+            }
+
+            $media->delete();
+
+            if ($this->rateLimit) {
+                usleep((1 / $this->rateLimit) * 1_000_000);
+            }
+
+            $this->info("Orphaned Media[id={$media->id}] has been removed");
+        });
+    }
+
+    /** @return Collection<int, Media> */
+    protected function getOrphanedMediaItems(): Collection
+    {
+        $collectionName = $this->argument('collectionName');
+
+        if (is_string($collectionName)) {
+            return $this->mediaRepository->getOrphansByCollectionName($collectionName);
+        }
+
+        return $this->mediaRepository->getOrphans();
+    }
+
     protected function deleteFilesGeneratedForDeprecatedConversions(): void
     {
         $this->getMediaItems()->each(function (Media $media) {
             $this->deleteConversionFilesForDeprecatedConversions($media);
 
             if ($media->responsive_images) {
-                $this->deleteResponsiveImagesForDeprecatedConversions($media);
+                $this->deleteDeprecatedResponsiveImages($media);
             }
 
             if ($this->rateLimit) {
@@ -110,11 +142,12 @@ class CleanCommand extends Command
     {
         $conversionFilePaths = ConversionCollection::createForMedia($media)->getConversionsFiles($media->collection_name);
 
-        $conversionPath = $this->basePathGenerator->getPathForConversions($media);
+        $conversionPath = PathGeneratorFactory::create($media)->getPathForConversions($media);
         $currentFilePaths = $this->fileSystem->disk($media->disk)->files($conversionPath);
 
         collect($currentFilePaths)
             ->reject(fn (string $currentFilePath) => $conversionFilePaths->contains(basename($currentFilePath)))
+            ->reject(fn (string $currentFilePath) => $media->file_name === basename($currentFilePath))
             ->each(function (string $currentFilePath) use ($media) {
                 if (! $this->isDryRun) {
                     $this->fileSystem->disk($media->disk)->delete($currentFilePath);
@@ -126,9 +159,10 @@ class CleanCommand extends Command
             });
     }
 
-    protected function deleteResponsiveImagesForDeprecatedConversions(Media $media): void
+    protected function deleteDeprecatedResponsiveImages(Media $media): void
     {
-        $conversionNames = ConversionCollection::createForMedia($media)
+        $conversionNamesWithResponsiveImages = ConversionCollection::createForMedia($media)
+            ->filter(fn (Conversion $conversion) => $conversion->shouldGenerateResponsiveImages())
             ->map(fn (Conversion $conversion) => $conversion->getName())
             ->push('media_library_original');
 
@@ -137,7 +171,7 @@ class CleanCommand extends Command
 
         collect($responsiveImagesGeneratedFor)
             ->map(fn (string $generatedFor) => $media->responsiveImages($generatedFor))
-            ->reject(fn (RegisteredResponsiveImages $responsiveImages) => $conversionNames->contains($responsiveImages->generatedFor))
+            ->reject(fn (RegisteredResponsiveImages $responsiveImages) => $conversionNamesWithResponsiveImages->contains($responsiveImages->generatedFor))
             ->each(function (RegisteredResponsiveImages $responsiveImages) {
                 if (! $this->isDryRun) {
                     $responsiveImages->delete();

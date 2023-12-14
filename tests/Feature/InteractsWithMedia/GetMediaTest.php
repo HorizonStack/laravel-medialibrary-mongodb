@@ -203,13 +203,23 @@ it('can get the path to first media in a collection', function () {
     expect($this->testModel->getFirstMediaPath('images'))->toEqual($firstMedia->getPath());
 });
 
-it('can get the default path to the first media in a collection', function () {
-    expect($this->testModel->getFirstMediaPath('avatar'))->toEqual('/default-path.jpg');
-});
+it('can get the default path to the first media in a collection', function ($conversionName, $expectedPath) {
+    expect($this->testModel->getFirstMediaPath('avatar', $conversionName))->toEqual($expectedPath);
+})->with([
+    ['', '/default-path.jpg'],
+    ['default', '/default-path.jpg'],
+    ['foo', '/default-path.jpg'],
+    ['avatar_thumb', '/default-avatar-thumb-path.jpg'],
+]);
 
-it('can get the default url to the first media in a collection', function () {
-    expect($this->testModel->getFirstMediaUrl('avatar'))->toEqual('/default-url.jpg');
-});
+it('can get the default url to the first media in a collection', function ($conversionName, $expectedUrl) {
+    expect($this->testModel->getFirstMediaUrl('avatar', $conversionName))->toEqual($expectedUrl);
+})->with([
+    ['', '/default-url.jpg'],
+    ['default', '/default-url.jpg'],
+    ['foo', '/default-url.jpg'],
+    ['avatar_thumb', '/default-avatar-thumb-url.jpg'],
+]);
 
 it('can get the default path to the first media in a collection if conversion not marked as generated yet', function () {
     $media = $this
@@ -304,4 +314,25 @@ it('will cache loaded media', function () {
 
 it('returns null when getting first media for an empty collection', function () {
     expect($this->testModel->getFirstMedia())->toBeNull();
+});
+
+it('can serialize model', function () {
+    expect(unserializeAndSerializeModel($this->testModel))->toEqual($this->testModel);
+    $this->testModel->addMedia($this->getTestJpg())->preservingOriginal()->toMediaCollection('images');
+
+    expect(unserializeAndSerializeModel($this->testModel))->toEqual($this->testModel->fresh());
+});
+
+it('will get media from the all collections', function () {
+    expect($this->testModel->getMedia('images'))->toHaveCount(0);
+    expect($this->testModel->getMedia('downloads'))->toHaveCount(0);
+    expect($this->testModel->getMedia())->toHaveCount(0);
+
+    $this->testModel->addMedia($this->getTestFilesDirectory('test.jpg'))->preservingOriginal()->toMediaCollection('images');
+    $this->testModel->addMedia($this->getTestFilesDirectory('test.jpg'))->preservingOriginal()->toMediaCollection('downloads');
+    $this->testModel->addMedia($this->getTestFilesDirectory('test.jpg'))->preservingOriginal()->toMediaCollection();
+
+    $this->testModel = $this->testModel->fresh();
+
+    expect($this->testModel->getMedia('*'))->toHaveCount(3);
 });

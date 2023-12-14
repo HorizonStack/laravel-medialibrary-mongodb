@@ -3,6 +3,7 @@
 namespace Spatie\MediaLibrary\Conversions;
 
 use BadMethodCallException;
+use Illuminate\Support\Traits\Conditionable;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\Support\FileNamer\FileNamer;
@@ -10,6 +11,8 @@ use Spatie\MediaLibrary\Support\FileNamer\FileNamer;
 /** @mixin \Spatie\Image\Manipulations */
 class Conversion
 {
+    use Conditionable;
+
     protected FileNamer $fileNamer;
 
     protected float $extractVideoFrameAtSecond = 0;
@@ -201,7 +204,7 @@ class Conversion
     public function getResultExtension(string $originalFileExtension = ''): string
     {
         if ($this->shouldKeepOriginalImageFormat()) {
-            if (in_array(strtolower($originalFileExtension), ['jpg', 'jpeg', 'pjpg', 'png', 'gif'])) {
+            if (in_array(strtolower($originalFileExtension), ['jpg', 'jpeg', 'pjpg', 'png', 'gif', 'webp', 'avif'])) {
                 return $originalFileExtension;
             }
         }

@@ -15,7 +15,7 @@ Single application licenses maybe installed in a single Laravel app. In case you
 
 ## Current version
 
-The current version of Media Library Pro is v2. We highly recommand to use at least v2.1.7 as previous versions contain a security issue.
+The current version of Media Library Pro is v3.
 
 You will find upgrade instructions [here](/docs/laravel-medialibrary/v10/handling-uploads-with-media-library-pro/upgrading).
 
@@ -51,6 +51,19 @@ This is the content you should put in `auth.json`:
 }
 ```
 
+
+To be sure you can reach `satis.spatie.be`,  clean your autoloaders before using this command:
+
+```bash
+composer dump-autoload
+```
+
+To validate if Composer can read your auth.json you can run this command:
+
+```bash
+composer config --list --global | grep satis.spatie.be
+```
+
 If you are using [Laravel Forge](https://forge.laravel.com), you don't need to create the `auth.json` file manually. Instead, you can set the credentials on the Composer Package Authentication screen of your server. Fill out the fields with these values:
 
 - Repository URL: `satis.spatie.be`
@@ -62,7 +75,7 @@ If you are using [Laravel Forge](https://forge.laravel.com), you don't need to c
 With the configuration above in place, you'll be able to install the Media Library Pro into your project using this command:
 
 ```bash
-composer require "spatie/laravel-medialibrary-pro:^2.0.0"
+composer require "spatie/laravel-medialibrary-pro:^3.0.0"
 ```
 
 ## Prepare the database
@@ -104,7 +117,7 @@ This macro will add the routes to controllers that accept file uploads for all c
 
 #### Only allow authenticated users to upload files
 
-If in your project, you only want authenticated users to upload files, you can put the macro in a group that applies autentication middleware.
+If in your project, you only want authenticated users to upload files, you can put the macro in a group that applies authentication middleware.
 
 ```php
 Route::middleware('auth')->group(function() {

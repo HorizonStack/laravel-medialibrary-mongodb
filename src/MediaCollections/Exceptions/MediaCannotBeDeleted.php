@@ -3,7 +3,7 @@
 namespace Spatie\MediaLibrary\MediaCollections\Exceptions;
 
 use Exception;
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class MediaCannotBeDeleted extends Exception
 {

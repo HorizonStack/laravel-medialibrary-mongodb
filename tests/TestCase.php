@@ -14,6 +14,7 @@ use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModel;
 use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithConversion;
 use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithConversionQueued;
 use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithConversionsOnOtherDisk;
+use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithConversionUsingModelInstance;
 use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithMorphMap;
 use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithMultipleConversions;
 use Spatie\MediaLibrary\Tests\TestSupport\TestModels\TestModelWithoutMediaConversions;
@@ -43,6 +44,8 @@ abstract class TestCase extends Orchestra
 
     protected TestModelWithConversionsOnOtherDisk $testModelWithConversionsOnOtherDisk;
 
+    protected TestModelWithConversionUsingModelInstance $testModelWithConversionUsingModelInstance;
+
     protected function setUp(): void
     {
         $this->loadEnvironmentVariables();
@@ -63,6 +66,7 @@ abstract class TestCase extends Orchestra
         $this->testModelWithMorphMap = TestModelWithMorphMap::first();
         $this->testModelWithResponsiveImages = TestModelWithResponsiveImages::first();
         $this->testModelWithConversionsOnOtherDisk = TestModelWithConversionsOnOtherDisk::first();
+        $this->testModelWithConversionUsingModelInstance = TestModelWithConversionUsingModelInstance::first();
     }
 
     protected function loadEnvironmentVariables()
@@ -232,6 +236,16 @@ abstract class TestCase extends Orchestra
     public function getTestWebp(): string
     {
         return $this->getTestFilesDirectory('test.webp');
+    }
+
+    public function getTestAvif(): string
+    {
+        return $this->getTestFilesDirectory('test.avif');
+    }
+
+    public function getTestHeic(): string
+    {
+        return $this->getTestFilesDirectory('test.heic');
     }
 
     public function getTestMp4(): string

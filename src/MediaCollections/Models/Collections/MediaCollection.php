@@ -10,7 +10,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @template TKey of array-key
  * @template TModel of \Spatie\MediaLibrary\MediaCollections\Models\Media
  *
- * @extends \Illuminate\Database\Eloquent\Collection<TKey, TModel>
+ * @extends Collection<TKey, TModel>
  */
 class MediaCollection extends Collection implements Htmlable
 {
@@ -56,6 +56,10 @@ class MediaCollection extends Collection implements Htmlable
 
     public function jsonSerialize(): array
     {
+        if (config('media-library.use_default_collection_serialization')) {
+            return parent::jsonSerialize();
+        }
+
         if (! ($this->formFieldName ?? $this->collectionName)) {
             return [];
         }

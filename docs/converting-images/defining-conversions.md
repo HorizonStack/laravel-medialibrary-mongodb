@@ -5,9 +5,11 @@ weight: 1
 
 When adding files to the media library it can automatically create derived versions such as thumbnails and banners.
 
-Media conversions will be executed whenever  a `jpg`, `png`, `svg`, `webp`, `pdf`, `mp4 `, `mov` or `webm` file is added to the media library. By default, the conversions will be saved as a `jpg` files. This can be overwritten using the `format()` or `keepOriginalImageFormat()` methods.
+Media conversions will be executed whenever  a `jpg`, `png`, `svg`, `webp`, `avif`, `pdf`, `mp4 `, `mov` or `webm` file is added to the media library. By default, the conversions will be saved as a `jpg` files. This can be overwritten using the `format()` or `keepOriginalImageFormat()` methods.
 
 Internally, [spatie/image](https://docs.spatie.be/image/v1/) is used to manipulate the images. You can use [any manipulation function](https://docs.spatie.be/image) from that package.
+
+Please check [the image generator docs](/laravel-medialibrary/v10/converting-other-file-types/using-image-generators) for additional installation requirements when working with PDF, SVG or video formats.
 
 ## Are you a visual learner?
 
@@ -22,7 +24,7 @@ Want to see more videos like this? Check out our [free video course on how to us
 You should add a method called `registerMediaConversions` to your model. In that model you can define the media conversion. Here's an example:
 
 ```php
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -92,7 +94,7 @@ $media->getUrl('old-picture') // the url to the sepia, bordered version
 
 ## Performing conversions on specific collections
 
-By default a conversion will be performed on all files regardless of which [collection](/laravel-medialibrary/v10/working-with-media-collections/simple-media-collections) is used.  Conversions can also be performed on all specific collections by adding a call to  `performOnCollections`.
+By default a conversion will be performed on all files regardless of which [collection](/laravel-medialibrary/v10/working-with-media-collections/simple-media-collections) is used. Conversions can also be performed on specific collections by adding a call to `performOnCollections`.
 
 This is how that looks like in the model:
 
@@ -101,9 +103,9 @@ This is how that looks like in the model:
 public function registerMediaConversions(Media $media = null): void
 {
     $this->addMediaConversion('thumb')
+          ->performOnCollections('images', 'downloads')
           ->width(368)
-          ->height(232)
-          ->performOnCollections('images', 'downloads');
+          ->height(232);
 }
 ```
 
@@ -120,7 +122,7 @@ $media->getUrl('thumb') // returns ''
 
 ## Queuing conversions
 
-By default, a conversion will be added to the queue that you've [specified in the configuration](https://docs.spatie.be/laravel-medialibrary/v10/installation-setup). If you want your image to be created directly (and not on a queue) use `nonQueued` on a conversion.
+By default, a conversion will be added to the connection and queue that you've [specified in the configuration](/laravel-medialibrary/v10/installation-setup). If you want your image to be created directly (and not on a queue) use `nonQueued` on a conversion.
 
 ```php
 // in your model
@@ -158,9 +160,9 @@ public $registerMediaConversionsUsingModelInstance = true;
 public function registerMediaConversions(Media $media = null): void
 {
     $this->addMediaConversion('thumb')
+          ->performOnCollections('images', 'downloads')
           ->width($this->width)
-          ->height($this->height)
-          ->performOnCollections('images', 'downloads');
+          ->height($this->height);
 }
 ```
 

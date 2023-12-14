@@ -1,12 +1,9 @@
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
-
 <p align="center"><img src="/art/socialcard.png" alt="Social Card of Laravel Media Library"></p>
 
 # Associate files with Eloquent models
 
 [![Latest Version](https://img.shields.io/github/release/spatie/laravel-medialibrary.svg?style=flat-square)](https://github.com/spatie/laravel-medialibrary/releases)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/spatie/laravel-medialibrary/run-tests?label=tests)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/spatie/laravel-medialibrary/run-tests.yml?branch=master&style=flat-square&label=tests)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary)
 
 This package can associate all sorts of files with Eloquent models. It provides a
@@ -59,7 +56,19 @@ If you've found a bug regarding security please mail [security@spatie.be](mailto
 You can run the tests with:
 
 ```bash
-vendor/bin/phpunit
+./vendor/bin/pest
+```
+
+You can run the Github actions locally with [act](https://github.com/nektos/act). You have to use a [custom image](https://github.com/shivammathur/setup-php#local-testing-setup) for the ubuntu-latest platform to get PHP up and running properly. To run the tests locally, run:
+
+```bash
+act -P ubuntu-latest=shivammathur/node:latest
+```
+
+To run a specific workflow, for example `run-tests.yml` run:
+
+```bash
+act -P ubuntu-latest=shivammathur/node:latest -j run-tests
 ```
 
 ## Upgrading

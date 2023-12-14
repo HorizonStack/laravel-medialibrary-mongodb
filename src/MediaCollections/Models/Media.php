@@ -3,15 +3,17 @@
 namespace Spatie\MediaLibrary\MediaCollections\Models;
 
 use DateTimeInterface;
+use Illuminate\Contracts\Mail\Attachable;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Mail\Attachment;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use MongoDB\Laravel\Eloquent\Model;
 use Spatie\MediaLibrary\Conversions\Conversion;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\ImageGeneratorFactory;
@@ -31,13 +33,30 @@ use Spatie\MediaLibrary\Support\UrlGenerator\UrlGeneratorFactory;
 use Spatie\MediaLibraryPro\Models\TemporaryUpload;
 
 /**
- * @property-read string $type
- * @property-read string $extension
+ * @property string $uuid
+ * @property string $model_type
+ * @property string|int $model_id
+ * @property string $collection_name
+ * @property string $name
+ * @property string $file_name
+ * @property string $mime_type
+ * @property string $disk
+ * @property string $conversions_disk
+ * @property string $type
+ * @property string $extension
  * @property-read string $humanReadableSize
- * @property-read string $previewUrl
- * @property-read string $originalUrl
+ * @property-read string $preview_url
+ * @property-read string $original_url
+ * @property int $size
+ * @property ?int $order_column
+ * @property array $manipulations
+ * @property array $custom_properties
+ * @property array $generated_conversions
+ * @property array $responsive_images
+ * @property-read ?\Illuminate\Support\Carbon $created_at
+ * @property-read ?\Illuminate\Support\Carbon $updated_at
  */
-class Media extends Model implements Responsable, Htmlable
+class Media extends Model implements Responsable, Htmlable, Attachable
 {
     use IsSorted;
     use CustomMediaProperties;
@@ -98,6 +117,10 @@ class Media extends Model implements Responsable, Htmlable
         return $urlGenerator->getPath();
     }
 
+    public function getPathRelativeToRoot(string $conversionName = ''): string
+    {
+        return $this->getUrlGenerator($conversionName)->getPathRelativeToRoot();
+    }
 
     public function getUrlGenerator(string $conversionName): UrlGenerator
     {
@@ -218,6 +241,7 @@ class Media extends Model implements Responsable, Htmlable
 
     /**
      * @param mixed $value
+     *
      * @return $this
      */
     public function setCustomProperty(string $name, $value): self
@@ -263,7 +287,7 @@ class Media extends Model implements Responsable, Htmlable
 
         $this->generated_conversions = $generatedConversions;
 
-        $this->save();
+        $this->saveOrTouch();
 
         return $this;
     }
@@ -276,7 +300,7 @@ class Media extends Model implements Responsable, Htmlable
 
         $this->generated_conversions = $generatedConversions;
 
-        $this->save();
+        $this->saveOrTouch();
 
         return $this;
     }
@@ -346,6 +370,7 @@ class Media extends Model implements Responsable, Htmlable
         return Attribute::get(fn () => $this->getUrl());
     }
 
+    /** @param string $collectionName */
     public function move(HasMedia $model, $collectionName = 'default', string $diskName = '', string $fileName = ''): self
     {
         $newMedia = $this->copy($model, $collectionName, $diskName, $fileName);
@@ -355,13 +380,14 @@ class Media extends Model implements Responsable, Htmlable
         return $newMedia;
     }
 
+    /** @param string $collectionName */
     public function copy(HasMedia $model, $collectionName = 'default', string $diskName = '', string $fileName = ''): self
     {
         $temporaryDirectory = TemporaryDirectory::create();
 
         $temporaryFile = $temporaryDirectory->path('/') . DIRECTORY_SEPARATOR . $this->file_name;
 
-        /** @var \Spatie\MediaLibrary\MediaCollections\Filesystem $filesystem */
+        /** @var Filesystem $filesystem */
         $filesystem = app(Filesystem::class);
 
         $filesystem->copyFromMediaLibrary($this, $temporaryFile);
@@ -389,7 +415,7 @@ class Media extends Model implements Responsable, Htmlable
 
     public function stream()
     {
-        /** @var \Spatie\MediaLibrary\MediaCollections\Filesystem $filesystem */
+        /** @var Filesystem $filesystem */
         $filesystem = app(Filesystem::class);
 
         return $filesystem->getStream($this);
@@ -431,5 +457,30 @@ class Media extends Model implements Responsable, Htmlable
                 fn (Builder $builder) => $builder->where('session_id', session()->getId())
             )
             ->get();
+    }
+
+    public function mailAttachment(string $conversion = ''): Attachment
+    {
+        $attachment = Attachment::fromStorageDisk($this->disk, $this->getPathRelativeToRoot($conversion))->as($this->file_name);
+
+        if ($this->mime_type) {
+            $attachment->withMime($this->mime_type);
+        }
+
+        return $attachment;
+    }
+
+    public function toMailAttachment(): Attachment
+    {
+        return $this->mailAttachment();
+    }
+
+    protected function saveOrTouch(): bool
+    {
+        if (! $this->exists || $this->isDirty()) {
+            return $this->save();
+        }
+
+        return $this->touch();
     }
 }

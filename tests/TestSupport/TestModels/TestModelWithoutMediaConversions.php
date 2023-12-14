@@ -2,7 +2,7 @@
 
 namespace Spatie\MediaLibrary\Tests\TestSupport\TestModels;
 
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 

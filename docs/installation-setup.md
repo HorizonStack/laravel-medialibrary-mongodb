@@ -3,7 +3,7 @@ title: Base installation
 weight: 4
 ---
 
-Media library can be installed via Composer:
+Media Library can be installed via Composer:
 
 If you only use the base package issue this command:
 
@@ -11,11 +11,7 @@ If you only use the base package issue this command:
 composer require "spatie/laravel-medialibrary:^10.0.0"
 ```
 
-If you have a license for media library pro, you should use `laravel-media-library-pro`
-
-```bash
-composer require spatie/laravel-medialibrary-pro
-```
+If you have a license for Media Library Pro, you should install `spatie/laravel-media-library-pro` instead. Please refer to our [Media Library Pro installation instructions](https://spatie.be/docs/laravel-medialibrary/v10/handling-uploads-with-media-library-pro/installation) to continue.
 
 ## Preparing the database
 
@@ -55,6 +51,12 @@ return [
      * Adding a larger file will result in an exception.
      */
     'max_file_size' => 1024 * 1024 * 10,
+    
+    /*
+     * This queue connection will be used to generate derived and responsive images.
+     * Leave empty to use the default queue connection.
+     */
+    'queue_connection_name' => '',
 
     /*
      * This queue will be used to generate derived and responsive images.
@@ -140,10 +142,20 @@ return [
             '-O3', // this produces the slowest but best results
         ],
         Spatie\ImageOptimizer\Optimizers\Cwebp::class => [
-                '-m 6', // for the slowest compression method in order to get the best compression.
-                '-pass 10', // for maximizing the amount of analysis pass.
-                '-mt', // multithreading for some speed improvements.
-                '-q 90', //quality factor that brings the least noticeable changes.
+            '-m 6', // for the slowest compression method in order to get the best compression.
+            '-pass 10', // for maximizing the amount of analysis pass.
+            '-mt', // multithreading for some speed improvements.
+            '-q 90', //quality factor that brings the least noticeable changes.
+        ],
+        Spatie\ImageOptimizer\Optimizers\Avifenc::class => [
+            '-a cq-level=23', // constant quality level, lower values mean better quality and greater file size (0-63).
+            '-j all', // number of jobs (worker threads, "all" uses all available cores).
+            '--min 0', // min quantizer for color (0-63).
+            '--max 63', // max quantizer for color (0-63).
+            '--minalpha 0', // min quantizer for alpha (0-63).
+            '--maxalpha 63', // max quantizer for alpha (0-63).
+            '-a end-usage=q', // rate control mode set to Constant Quality mode.
+            '-a tune=ssim', // SSIM as tune the encoder for distortion metric.
         ],
     ],
 
@@ -153,6 +165,7 @@ return [
     'image_generators' => [
         Spatie\MediaLibrary\Conversions\ImageGenerators\Image::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Webp::class,
+        Spatie\MediaLibrary\Conversions\ImageGenerators\Avif::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Pdf::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Svg::class,
         Spatie\MediaLibrary\Conversions\ImageGenerators\Video::class,
@@ -303,12 +316,20 @@ Media library will use these tools to [optimize converted images](https://docs.s
 - [Pngquant 2](https://pngquant.org/)
 - [SVGO](https://github.com/svg/svgo)
 - [Gifsicle](http://www.lcdf.org/gifsicle/)
+- [Avifenc](https://github.com/AOMediaCodec/libavif/blob/main/doc/avifenc.1.md)
 
 Here's how to install all the optimizers on Ubuntu:
 
 ```bash
-sudo apt install jpegoptim optipng pngquant gifsicle
+sudo apt install jpegoptim optipng pngquant gifsicle libavif-bin
 npm install -g svgo
+```
+
+If you don't want to install `npm` on your Ubuntu server, you can use `snap` which is installed by default:
+
+```bash
+sudo apt install jpegoptim optipng pngquant gifsicle libavif-bin
+sudo snap install svgo
 ```
 
 Here's how to install the binaries on MacOS (using [Homebrew](https://brew.sh/)):
@@ -319,6 +340,7 @@ brew install optipng
 brew install pngquant
 brew install svgo
 brew install gifsicle
+brew install libavif
 ```
 
 ## Installing Media Library Pro

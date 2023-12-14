@@ -2,8 +2,8 @@
 
 namespace Spatie\MediaLibrary\MediaCollections;
 
-use Jenssegers\Mongodb\Eloquent\Model;
 use Illuminate\Support\Collection;
+use MongoDB\Laravel\Eloquent\Model;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\RequestDoesNotHaveFile;
 use Spatie\MediaLibrary\Support\RemoteFile;
 use Spatie\MediaLibraryPro\Dto\PendingMediaItem;
@@ -13,7 +13,7 @@ class FileAdderFactory
 {
     public static function create(Model $subject, string|UploadedFile $file): FileAdder
     {
-        /** @var \Spatie\MediaLibrary\MediaCollections\FileAdder $fileAdder */
+        /** @var FileAdder $fileAdder */
         $fileAdder = app(FileAdder::class);
 
         return $fileAdder
@@ -23,7 +23,7 @@ class FileAdderFactory
 
     public static function createFromDisk(Model $subject, string $key, string $disk): FileAdder
     {
-        /** @var \Spatie\MediaLibrary\MediaCollections\FileAdder $fileAdder */
+        /** @var FileAdder $fileAdder */
         $fileAdder = app(FileAdder::class);
 
         return $fileAdder
@@ -68,7 +68,7 @@ class FileAdderFactory
 
     public static function createForPendingMedia(Model $subject, PendingMediaItem $pendingMedia): FileAdder
     {
-        /** @var \Spatie\MediaLibrary\MediaCollections\FileAdder $fileAdder */
+        /** @var FileAdder $fileAdder */
         $fileAdder = app(FileAdder::class);
 
         return $fileAdder

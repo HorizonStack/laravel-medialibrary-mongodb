@@ -71,6 +71,8 @@ class RegenerateCommand extends Command
             }
         }
 
+        $this->newLine(2);
+
         $this->info('All done!');
     }
 
@@ -106,7 +108,7 @@ class RegenerateCommand extends Command
             $mediaIds = explode(',', (string) $mediaIds);
         }
 
-        if (count($mediaIds) === 1 && Str::contains($mediaIds[0], ',')) {
+        if (count($mediaIds) === 1 && Str::contains((string) $mediaIds[0], ',')) {
             $mediaIds = explode(',', (string) $mediaIds[0]);
         }
 

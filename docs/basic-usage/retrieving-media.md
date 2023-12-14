@@ -9,20 +9,26 @@ To retrieve files you can use the `getMedia`-method:
 $mediaItems = $yourModel->getMedia();
 ```
 
+To retrieve files from all collections you can use the `getMedia`-method with `*`:
+
+```php
+$mediaItems = $yourModel->getMedia("*");
+```
+
 The method returns a collection of `Media`-objects.
 
-You can retrieve the url and path to the file associated with the `Media`-object using  `getUrl`, `getTemporaryUrl` (for S3 only) and `getPath`:
+You can retrieve the URL and path to the file associated with the `Media`-object using  `getUrl`, `getTemporaryUrl` (for S3 only) and `getPath`:
 
 ```php
 $publicUrl = $mediaItems[0]->getUrl();
-$publicFullUrl = $mediaItems[0]->getFullUrl(); //url including domain
+$publicFullUrl = $mediaItems[0]->getFullUrl(); // URL including domain
 $fullPathOnDisk = $mediaItems[0]->getPath();
 $temporaryS3Url = $mediaItems[0]->getTemporaryUrl(Carbon::now()->addMinutes(5));
 ```
 
-If you want to retrieve versioned media urls, for example when needing cache busting, you can enable versioning by setting the `version_urls` config value to `true` in your `media-library.php` config file. The `getUrl()` and `getFullUrl()` functions will return the url with a version string based on the `updated_at` column of the media model.
+If you want to retrieve versioned media URLs, for example when needing cache busting, you can enable versioning by setting the `version_urls` config value to `true` in your `media-library.php` config file. The `getUrl()` and `getFullUrl()` functions will return the URL with a version string based on the `updated_at` column of the media model.
 
-Since retrieving the first media and the url for the first media for an object is such a common scenario, the `getFirstMedia` and `getFirstMediaUrl` convenience-methods are also provided:
+Since retrieving the first media and the URL for the first media for an object is such a common scenario, the `getFirstMedia` and `getFirstMediaUrl` convenience-methods are also provided:
 
 ```php
 $media = $yourModel->getFirstMedia();
@@ -95,7 +101,7 @@ $mediaItems[0]->delete();
 
 When a `Media` instance gets deleted all related files will be removed from the filesystem.
 
-Deleting a model with associated media will also delete all associated files.
+Deleting a model with associated media will also delete all associated files. If you use soft deletes, the associated files won't be deleted.
 
 ```php
 $yourModel->delete(); // all associated files will be deleted as well
@@ -110,7 +116,7 @@ $yourModel->deletePreservingMedia(); // all associated files will be preserved
 If you want to remove all associated media in a specific collection you can use the `clearMediaCollection` method. It also accepts the collection name as an optional parameter:
 
 ```php
-$yourModel->clearMediaCollection(); // all media will be deleted
+$yourModel->clearMediaCollection(); // all media in the "default" collection will be deleted
 
 $yourModel->clearMediaCollection('images'); // all media in the images collection will be deleted
 ```

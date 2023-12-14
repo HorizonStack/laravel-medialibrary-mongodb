@@ -2,15 +2,16 @@
 
 namespace Spatie\MediaLibrary\MediaCollections;
 
-use Exception;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\Conversions\ConversionCollection;
 use Spatie\MediaLibrary\Conversions\FileManipulator;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\DiskCannotBeAccessed;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\Support\File;
+use Spatie\MediaLibrary\Support\FileRemover\FileRemoverFactory;
 use Spatie\MediaLibrary\Support\PathGenerator\PathGeneratorFactory;
 use Spatie\MediaLibrary\Support\RemoteFile;
 
@@ -23,22 +24,39 @@ class Filesystem
     ) {
     }
 
-    public function add(string $file, Media $media, ?string $targetFileName = null): void
+    public function add(string $file, Media $media, ?string $targetFileName = null): bool
     {
-        $this->copyToMediaLibrary($file, $media, null, $targetFileName);
+        try {
+            $this->copyToMediaLibrary($file, $media, null, $targetFileName);
+        } catch(DiskCannotBeAccessed $exception) {
+            return false;
+        }
 
         event(new MediaHasBeenAdded($media));
 
         app(FileManipulator::class)->createDerivedFiles($media);
+
+        return true;
     }
 
-    public function addRemote(RemoteFile $file, Media $media, ?string $targetFileName = null): void
+    public function addRemote(RemoteFile $file, Media $media, ?string $targetFileName = null): bool
     {
-        $this->copyToMediaLibraryFromRemote($file, $media, null, $targetFileName);
+        try {
+            $this->copyToMediaLibraryFromRemote($file, $media, null, $targetFileName);
+        } catch(DiskCannotBeAccessed $exception) {
+            return false;
+        }
 
         event(new MediaHasBeenAdded($media));
 
         app(FileManipulator::class)->createDerivedFiles($media);
+
+        return true;
+    }
+
+    public function prepareCopyFileOnDisk(RemoteFile $file, Media $media, string $destination): void
+    {
+        $this->copyFileOnDisk($file->getKey(), $destination, $media->disk);
     }
 
     public function copyToMediaLibraryFromRemote(RemoteFile $file, Media $media, ?string $type = null, ?string $targetFileName = null): void
@@ -52,7 +70,7 @@ class Filesystem
             : $media->getDiskDriverName();
 
         if ($this->shouldCopyFileOnDisk($file, $media, $diskDriverName)) {
-            $this->copyFileOnDisk($file->getKey(), $destination, $media->disk);
+            $this->prepareCopyFileOnDisk($file, $media, $destination);
 
             return;
         }
@@ -129,16 +147,20 @@ class Filesystem
             : $media->getDiskDriverName();
 
         if ($diskDriverName === 'local') {
-            $this->filesystem
+            $success = $this->filesystem
                 ->disk($diskName)
                 ->put($destination, $file);
 
             fclose($file);
 
+            if (! $success) {
+                throw DiskCannotBeAccessed::create($diskName);
+            }
+
             return;
         }
 
-        $this->filesystem
+        $success = $this->filesystem
             ->disk($diskName)
             ->put(
                 $destination,
@@ -148,6 +170,10 @@ class Filesystem
 
         if (is_resource($file)) {
             fclose($file);
+        }
+
+        if (! $success) {
+            throw DiskCannotBeAccessed::create($diskName);
         }
     }
 
@@ -189,29 +215,16 @@ class Filesystem
 
     public function removeAllFiles(Media $media): void
     {
-        $mediaDirectory = $this->getMediaDirectory($media);
+        $fileRemover = FileRemoverFactory::create($media);
 
-        if ($media->disk !== $media->conversions_disk) {
-            $this->filesystem->disk($media->disk)->deleteDirectory($mediaDirectory);
-        }
-
-        $conversionsDirectory = $this->getMediaDirectory($media, 'conversions');
-
-        $responsiveImagesDirectory = $this->getMediaDirectory($media, 'responsiveImages');
-
-        collect([$mediaDirectory, $conversionsDirectory, $responsiveImagesDirectory])
-            ->each(function (string $directory) use ($media) {
-                try {
-                    $this->filesystem->disk($media->conversions_disk)->deleteDirectory($directory);
-                } catch (Exception $exception) {
-                    report($exception);
-                }
-            });
+        $fileRemover->removeAllFiles($media);
     }
 
     public function removeFile(Media $media, string $path): void
     {
-        $this->filesystem->disk($media->disk)->delete($path);
+        $fileRemover = FileRemoverFactory::create($media);
+
+        $fileRemover->removeFile($path, $media->disk);
     }
 
     public function removeResponsiveImages(Media $media, string $conversionName = 'media_library_original'): void
@@ -241,7 +254,7 @@ class Filesystem
 
         $oldMedia = (clone $media)->fill($media->getOriginal());
 
-        if ($oldMedia->getPath() === $media->getPath()) {
+        if ($factory->getPath($oldMedia) === $factory->getPath($media)) {
             return;
         }
 
@@ -303,18 +316,6 @@ class Filesystem
 
         if ($type === 'responsiveImages') {
             $directory = $pathGenerator->getPathForResponsiveImages($media);
-        }
-
-        $diskDriverName = in_array($type, ['conversions', 'responsiveImages'])
-            ? $media->getConversionsDiskDriverName()
-            : $media->getDiskDriverName();
-
-        $diskName = in_array($type, ['conversions', 'responsiveImages'])
-            ? $media->conversions_disk
-            : $media->disk;
-
-        if (! in_array($diskDriverName, ['s3'], true)) {
-            $this->filesystem->disk($diskName)->makeDirectory($directory);
         }
 
         return $directory;
